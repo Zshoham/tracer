@@ -1,0 +1,18 @@
+[project]
+name = "tracer"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fnvhash>=0.1.0",
+    "pyelftools>=0.31",
+]
+
+[project.scripts]
+tracer = "tools.cli:main"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.3.3",
+]
