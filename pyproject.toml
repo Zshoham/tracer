@@ -14,5 +14,9 @@ tracer = "tools.cli:main"
 
 [tool.uv]
 dev-dependencies = [
+    "ipdb>=0.13.13",
     "pytest>=8.3.3",
 ]
+
+[tool.pyright]
+typeCheckingMode = "standard"

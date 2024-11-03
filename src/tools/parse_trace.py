@@ -1,7 +1,7 @@
 import struct
 from dataclasses import dataclass, field
-from typing import List
 
+from tools.extract_trace_info import BasicTracePoint
 
 @dataclass
 class TraceId:
@@ -15,9 +15,9 @@ class TraceId:
     trace_counter: int = field(init=False)
 
     def __post_init__(self):
-        raw_bytes = struct.pack("<Q", self._raw_id)
+        raw_bytes = struct.pack(">Q", self._raw_id)
         self.file_hash, self.line_number, self.trace_counter = struct.unpack(
-            "<IHH", raw_bytes
+            ">IHH", raw_bytes
         )
 
     def __repr__(self) -> str:
@@ -30,9 +30,10 @@ class TracePoint:
 
     location: TraceId
     timestamp: int
+    trace_info: BasicTracePoint | None = None
 
 
-def parse_trace_points(binary_data: bytes) -> List[TracePoint]:
+def parse_trace_points(binary_data: bytes) -> list[TracePoint]:
     """
     Parse a byte array containing multiple trace_point structures.
 

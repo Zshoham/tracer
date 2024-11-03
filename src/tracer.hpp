@@ -46,22 +46,9 @@ void trace_to_buffer(uint64_t location);
 
 #define TRACE(message)                                                         \
   do {                                                                         \
-    static_assert(                                                             \
-        std::is_class<std::remove_reference<decltype(*this)>::type>::value,    \
-        "This macro is only meant to be used in member functions, please use " \
-        "F_TRACE for non member functions");                                   \
     uint64_t traceid = GCUID();                                                \
     static const char trace_mapping[]                                          \
-        __attribute__((section(".trace_info_c"), used)) =                      \
-            MAKE_TRACE_MAPPING(message);                                       \
-    trace_to_buffer(traceid);                                                  \
-  } while (0)
-
-#define F_TRACE(message)                                                       \
-  do {                                                                         \
-    uint64_t traceid = GCUID();                                                \
-    static const char trace_mapping[]                                          \
-        __attribute__((section(".trace_info"), used)) =                        \
+        __attribute__((section(".trace_info" TOSTRING(__COUNTER__)), used)) =  \
             MAKE_TRACE_MAPPING(message);                                       \
     trace_to_buffer(traceid);                                                  \
   } while (0)
