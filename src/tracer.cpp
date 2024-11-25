@@ -13,7 +13,7 @@ uint64_t time_ns() {
 }
 
 void trace_to_buffer(uint64_t location) {
-  trace_buffer[trace_buffer_index++] = {location, time_ns()};
+  trace_buffer[trace_buffer_index++ % TRACE_BUFFER_SIZE] = {location, time_ns()};
   if (trace_buffer_index > trace_buffer.max_size()) {
     flush_trace_buffer(trace_buffer);
   }

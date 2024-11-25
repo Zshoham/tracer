@@ -1,0 +1,8 @@
+name: imgui
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - gcc = 13
+  - pkgconfig = 1.4
+  - glfw = 3.3

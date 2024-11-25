@@ -1,3 +1,6 @@
-[submodule "examples/imgui"]
-	path = examples/imgui
+[submodule "examples/imgui/imgui"]
+	path = examples/imgui/imgui
 	url = git@github.com:ocornut/imgui.git
+[submodule "examples/imgui/imgui_test_engine"]
+	path = examples/imgui/imgui_test_engine
+	url = git@github.com:ocornut/imgui_test_engine.git
