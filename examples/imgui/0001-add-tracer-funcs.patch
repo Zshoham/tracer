@@ -1,0 +1,55 @@
+From 77f34bca7c6f6995b954db907966fd1f43842317 Mon Sep 17 00:00:00 2001
+From: Zshoham <ShohamZarfti@gmail.com>
+Date: Wed, 27 Nov 2024 21:29:04 +0200
+Subject: [PATCH] add tracer funcs
+
+---
+ imgui_internal.h | 24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/imgui_internal.h b/imgui_internal.h
+index 40cf3c0c..4384db62 100644
+--- a/imgui_internal.h
++++ b/imgui_internal.h
+@@ -57,6 +57,8 @@ Index of this file:
+ #include <math.h>       // sqrtf, fabsf, fmodf, powf, floorf, ceilf, cosf, sinf
+ #include <limits.h>     // INT_MIN, INT_MAX
+ 
++#include "tracer.h"
++
+ // Enable SSE intrinsics if available
+ #if (defined __SSE__ || defined __x86_64__ || defined _M_X64 || (defined(_M_IX86_FP) && (_M_IX86_FP >= 1))) && !defined(IMGUI_DISABLE_SSE)
+ #define IMGUI_ENABLE_SSE
+@@ -211,17 +213,19 @@ extern IMGUI_API ImGuiContext* GImGui;  // Current implicit context pointer
+ #endif
+ #endif
+ 
++#define FIRST_ARG(first, ...) first
++
+ // Debug Logging for ShowDebugLogWindow(). This is designed for relatively rare events so please don't spam.
+-#define IMGUI_DEBUG_LOG_ERROR(...)      do { ImGuiContext& g2 = *GImGui; if (g2.DebugLogFlags & ImGuiDebugLogFlags_EventError) IMGUI_DEBUG_LOG(__VA_ARGS__); else g2.DebugLogSkippedErrors++; } while (0)
+-#define IMGUI_DEBUG_LOG_ACTIVEID(...)   do { if (g.DebugLogFlags & ImGuiDebugLogFlags_EventActiveId)    IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
+-#define IMGUI_DEBUG_LOG_FOCUS(...)      do { if (g.DebugLogFlags & ImGuiDebugLogFlags_EventFocus)       IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
+-#define IMGUI_DEBUG_LOG_POPUP(...)      do { if (g.DebugLogFlags & ImGuiDebugLogFlags_EventPopup)       IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
+-#define IMGUI_DEBUG_LOG_NAV(...)        do { if (g.DebugLogFlags & ImGuiDebugLogFlags_EventNav)         IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
+-#define IMGUI_DEBUG_LOG_SELECTION(...)  do { if (g.DebugLogFlags & ImGuiDebugLogFlags_EventSelection)   IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
+-#define IMGUI_DEBUG_LOG_CLIPPER(...)    do { if (g.DebugLogFlags & ImGuiDebugLogFlags_EventClipper)     IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
+-#define IMGUI_DEBUG_LOG_IO(...)         do { if (g.DebugLogFlags & ImGuiDebugLogFlags_EventIO)          IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
+-#define IMGUI_DEBUG_LOG_FONT(...)       do { if (g.DebugLogFlags & ImGuiDebugLogFlags_EventFont)        IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
+-#define IMGUI_DEBUG_LOG_INPUTROUTING(...) do{if (g.DebugLogFlags & ImGuiDebugLogFlags_EventInputRouting)IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
++#define IMGUI_DEBUG_LOG_ERROR(...)      do { TRACE(FIRST_ARG(__VA_ARGS__)); ImGuiContext& g2 = *GImGui; if (g2.DebugLogFlags & ImGuiDebugLogFlags_EventError) IMGUI_DEBUG_LOG(__VA_ARGS__); else g2.DebugLogSkippedErrors++; } while (0)
++#define IMGUI_DEBUG_LOG_ACTIVEID(...)   do { TRACE(FIRST_ARG(__VA_ARGS__)); if (g.DebugLogFlags & ImGuiDebugLogFlags_EventActiveId)    IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
++#define IMGUI_DEBUG_LOG_FOCUS(...)      do { TRACE(FIRST_ARG(__VA_ARGS__)); if (g.DebugLogFlags & ImGuiDebugLogFlags_EventFocus)       IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
++#define IMGUI_DEBUG_LOG_POPUP(...)      do { TRACE(FIRST_ARG(__VA_ARGS__)); if (g.DebugLogFlags & ImGuiDebugLogFlags_EventPopup)       IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
++#define IMGUI_DEBUG_LOG_NAV(...)        do { TRACE(FIRST_ARG(__VA_ARGS__)); if (g.DebugLogFlags & ImGuiDebugLogFlags_EventNav)         IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
++#define IMGUI_DEBUG_LOG_SELECTION(...)  do { TRACE(FIRST_ARG(__VA_ARGS__)); if (g.DebugLogFlags & ImGuiDebugLogFlags_EventSelection)   IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
++#define IMGUI_DEBUG_LOG_CLIPPER(...)    do { TRACE(FIRST_ARG(__VA_ARGS__)); if (g.DebugLogFlags & ImGuiDebugLogFlags_EventClipper)     IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
++#define IMGUI_DEBUG_LOG_IO(...)         do { TRACE(FIRST_ARG(__VA_ARGS__)); if (g.DebugLogFlags & ImGuiDebugLogFlags_EventIO)          IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
++#define IMGUI_DEBUG_LOG_FONT(...)       do { TRACE(FIRST_ARG(__VA_ARGS__)); if (g.DebugLogFlags & ImGuiDebugLogFlags_EventFont)        IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
++#define IMGUI_DEBUG_LOG_INPUTROUTING(...) do{TRACE(FIRST_ARG(__VA_ARGS__)); if (g.DebugLogFlags & ImGuiDebugLogFlags_EventInputRouting)IMGUI_DEBUG_LOG(__VA_ARGS__); } while (0)
+ 
+ // Static Asserts
+ #define IM_STATIC_ASSERT(_COND)         static_assert(_COND, "")
+-- 
+2.47.0
+
