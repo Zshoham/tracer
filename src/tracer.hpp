@@ -25,7 +25,7 @@ struct trace_id {
       uint32_t file_hash;
       uint16_t line_number;
       uint16_t trace_counter;
-    };
+    } id_struct;
   };
 };
 
