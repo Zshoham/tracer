@@ -1,0 +1,48 @@
+export LD_LIBRARY_PATH := append("/lib", env_var("CONDA_PREFIX"))
+
+trace_file := "imgui_test_engine/imgui_test_suite/trace_output.tracer"
+test_exe := "imgui_test_engine/imgui_test_suite/imgui_test_suite"
+
+patch_imgui:
+  cd imgui && git apply ../0001-add-tracer-funcs.patch
+
+patch_tests:
+  cd imgui_test_engine && git apply ../0001-compile-with-tracer.patch
+
+patch: patch_imgui patch_tests
+
+clean_imgui:
+  cd imgui && git restore .
+
+clean_tests:
+  cd imgui_test_engine && git restore .
+
+build:
+  cd imgui_test_engine/imgui_test_suite && make -j$(getconf _NPROCESSORS_ONLN)
+
+clean: clean_imgui clean_tests
+  cd imgui_test_engine/imgui_test_suite && make clean
+  git submodule update --init --recursive
+  rm -f $PWD/*.json
+  rm -f $PWD/{{trace_file}}
+
+test: build
+  cd imgui_test_engine/imgui_test_suite && ./imgui_test_suite -v1 -nopause -nogui -nocapture tests
+
+benchmark name="benchmark": build
+  #!/bin/sh
+  OUTPUT_FILE=$PWD/{{name}}.json
+  cd imgui_test_engine/imgui_test_suite 
+  hyperfine -n {{name}} -r 30 --export-json $OUTPUT_FILE './imgui_test_suite -v1 -nopause -nogui -nocapture tests'
+ 
+compare: clean
+  just benchmark "benchmark-base"
+  just clean
+  just patch
+  just benchmark "benchmark-tracer"
+  jq -s '.[0].results += .[1].results | .[0]' benchmark-base.json benchmark-tracer.json > benchmark.json
+  python compare.py benchmark.json 
+
+tracer: clean patch test
+  uv run tracer build {{test_exe}} trace_map.json
+  uv run tracer convert {{trace_file}} trace_map.json full_trace.json

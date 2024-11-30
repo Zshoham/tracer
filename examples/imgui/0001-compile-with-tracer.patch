@@ -1,0 +1,48 @@
+From c139f129d2dc2fbb81cc4ec69941b6813aa5c19a Mon Sep 17 00:00:00 2001
+From: Zshoham <ShohamZarfti@gmail.com>
+Date: Sat, 30 Nov 2024 15:57:57 +0200
+Subject: [PATCH] compile with tracer
+
+---
+ imgui_test_suite/Makefile | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/imgui_test_suite/Makefile b/imgui_test_suite/Makefile
+index 54e04ef..d58357a 100644
+--- a/imgui_test_suite/Makefile
++++ b/imgui_test_suite/Makefile
+@@ -5,17 +5,19 @@
+ 
+ EXE = imgui_test_suite
+ IMGUI_DIR = ../../imgui
++TRACER_DIR = ../../../../src
+ SOURCES = imgui_test_suite.cpp
+ # FIXME: The paths look wrong here??
+ SOURCES += ../imgui_tests_core.cpp ../imgui_tests_docking.cpp ../imgui_tests_inputs.cpp ../imgui_tests_nav.cpp ../imgui_tests_perf.cpp ../imgui_tests_tables.cpp ../imgui_tests_viewports.cpp ../imgui_tests_widgets.cpp ../imgui_tests_widgets_inputtext.cpp
+ SOURCES += ../imgui_te_context.cpp ../imgui_te_coroutine.cpp ../imgui_te_engine.cpp ../imgui_te_perftool.cpp ../imgui_te_ui.cpp ../imgui_te_utils.cpp ../imgui_capture_tool.cpp ../imgui_te_exporters.cpp
+ SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
+ SOURCES += ../shared/imgui_app.cpp
++SOURCES += $(TRACER_DIR)/tracer.cpp
+ OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
+ UNAME_S := $(shell uname -s)
+ 
+-CXXFLAGS += -std=c++14
+-CFLAGS += -I../ -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I../libs
++CXXFLAGS += -std=c++17
++CFLAGS += -I../ -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I../libs -I$(TRACER_DIR)
+ CFLAGS += -g -Wall -Wformat
+ 
+ ifeq ($(IMGUI_OPTIMIZE),1)
+@@ -122,6 +124,9 @@ endif
+ %.o:$(IMGUI_DIR)/backends/%.cpp
+ 	$(CXX) $(CFLAGS) $(CXXFLAGS) $(IMGUI_CFLAGS) -c -o $@ $<
+ 
++%.o:$(TRACER_DIR)/%.cpp
++	$(CXX) $(CFLAGS) $(CXXFLAGS) -c -o $@ $<
++
+ all: $(EXE)
+ 	@echo Build complete for $(ECHO_MESSAGE)
+ 
+-- 
+2.47.0
+

@@ -30,7 +30,7 @@ void trace_to_buffer(uint64_t location) {
 }
 
 bool flush_trace_buffer(std::array<trace_point, TRACE_BUFFER_SIZE> &traces) {
-    std::ofstream outFile("trace_output.bin", std::ios::binary | std::ios::app);
+    std::ofstream outFile("trace_output.tracer", std::ios::binary | std::ios::app);
 
     if (!outFile) {
         return false;  // Failed to open file
